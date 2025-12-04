@@ -22,7 +22,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Sparkles,
-  Lightbulb
+  Lightbulb,
+  ArrowRight
 } from 'lucide-react';
 
 // --- 样式配置 ---
@@ -380,7 +381,7 @@ const TheorySection = () => {
   );
 };
 
-// --- 组件：核心工作流演示 (重构版 - 稳定坐标) ---
+// --- 组件：核心工作流演示 (重构版：管道化布局) ---
 const WorkflowDemo = () => {
   const [step, setStep] = useState(0);
 
@@ -496,213 +497,133 @@ const WorkflowDemo = () => {
             </div>
           </div>
 
-          {/* 右侧：动画演示舞台 (比例锁定 + 百分比定位) */}
-          <div className="lg:col-span-8 bg-white rounded-[2rem] border border-gray-200 aspect-[16/9] relative overflow-hidden shadow-inner group">
-            <div className="absolute inset-0 opacity-[0.05]" style={{backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '24px 24px'}}></div>
-
-            <div className="absolute inset-0">
-
-                {/* Agent A (Fixed at 15% left, 25% top) */}
-                <div className="absolute left-[15%] top-[25%] -translate-y-1/2 -translate-x-1/2 flex flex-col items-center z-10 w-24">
-                    <div className="w-16 h-16 rounded-2xl bg-white border border-indigo-100 shadow-xl flex items-center justify-center text-indigo-600 font-bold text-xl relative overflow-hidden">
-                        <span className="z-10">A</span>
-                        <div className="absolute inset-0 bg-indigo-50/50 z-0"></div>
+          {/* 右侧：动画演示舞台 (固定结构) */}
+          <div className="lg:col-span-8 bg-white rounded-[2rem] border border-gray-200 h-[450px] relative overflow-hidden shadow-inner group">
+            {/* 固定的三栏结构： Agent A/B (Left) -> System (Center) -> Output (Right) */}
+            <div className="absolute inset-0 grid grid-cols-3">
+                {/* Column 1: Agents */}
+                <div className="relative border-r border-gray-100/50 bg-gray-50/30 flex flex-col justify-around items-center py-8">
+                    {/* Agent A */}
+                    <div className="relative z-10 flex flex-col items-center">
+                         <div className="w-16 h-16 rounded-2xl bg-white border border-indigo-100 shadow-xl flex items-center justify-center text-indigo-600 font-bold text-xl mb-2">A</div>
+                         <span className="text-xs font-bold text-indigo-300 uppercase tracking-widest">Agent A</span>
+                         {/* Draft Bubble A */}
+                         <AnimatePresence>
+                             {step === 0 && (
+                                <motion.div initial={{opacity:0, x:-20}} animate={{opacity:1, x:0}} exit={{opacity:0}} className="absolute left-20 top-0 w-32 p-3 bg-white rounded-xl rounded-tl-none shadow-md border border-gray-100 text-xs text-gray-400">
+                                    Drafting...
+                                </motion.div>
+                             )}
+                         </AnimatePresence>
                     </div>
-                    <span className="mt-2 text-xs font-bold text-indigo-300 uppercase tracking-widest bg-white/80 px-2 py-1 rounded backdrop-blur-sm border border-indigo-100">Agent A</span>
+
+                    {/* Agent B */}
+                    <div className="relative z-10 flex flex-col items-center">
+                         <div className="w-16 h-16 rounded-2xl bg-white border border-cyan-100 shadow-xl flex items-center justify-center text-cyan-600 font-bold text-xl mb-2">B</div>
+                         <span className="text-xs font-bold text-cyan-300 uppercase tracking-widest">Agent B</span>
+                          {/* Draft Bubble B */}
+                          <AnimatePresence>
+                             {step === 0 && (
+                                <motion.div initial={{opacity:0, x:-20}} animate={{opacity:1, x:0}} exit={{opacity:0}} className="absolute left-20 top-0 w-32 p-3 bg-white rounded-xl rounded-tl-none shadow-md border border-gray-100 text-xs text-gray-400">
+                                    Drafting...
+                                </motion.div>
+                             )}
+                         </AnimatePresence>
+                    </div>
                 </div>
 
-                {/* Agent B (Fixed at 15% left, 75% top) */}
-                <div className="absolute left-[15%] top-[75%] -translate-y-1/2 -translate-x-1/2 flex flex-col items-center z-10 w-24">
-                    <div className="w-16 h-16 rounded-2xl bg-white border border-cyan-100 shadow-xl flex items-center justify-center text-cyan-600 font-bold text-xl relative overflow-hidden">
-                        <span className="z-10">B</span>
-                        <div className="absolute inset-0 bg-cyan-50/50 z-0"></div>
+                {/* Column 2: System / Latent Space */}
+                <div className="relative flex flex-col justify-center items-center">
+                    <div className={`w-48 h-48 rounded-full border-2 border-dashed ${step >= 2 ? "border-purple-300 animate-spin-slow" : "border-gray-200"} flex items-center justify-center transition-colors duration-500`}>
+                        {step >= 2 && <Cpu className="text-purple-500 w-12 h-12" />}
                     </div>
-                    <span className="mt-2 text-xs font-bold text-cyan-300 uppercase tracking-widest bg-white/80 px-2 py-1 rounded backdrop-blur-sm border border-cyan-100">Agent B</span>
+                    <span className="absolute bottom-8 text-xs font-bold text-gray-300 uppercase tracking-widest">ThoughtComm System</span>
                 </div>
 
-                {/* Step 1: Drafts */}
-                <AnimatePresence>
-                    {step === 0 && (
-                        <>
-                            <motion.div initial={{opacity:0, scale:0.8, x: -20}} animate={{opacity:1, scale:1, x: 0}} exit={{opacity:0, scale:0.8}} className="absolute top-[25%] left-[30%] -translate-y-1/2 bg-white p-3 rounded-xl rounded-tl-none shadow-md border border-gray-100 flex items-center gap-3 z-20">
-                                <FileText size={16} className="text-indigo-300"/>
-                                <span className="text-xs text-gray-400 font-mono">Draft A...</span>
-                                <motion.div initial={{scale:0}} animate={{scale:1}} transition={{delay:0.5}}><X size={14} className="text-red-400"/></motion.div>
-                            </motion.div>
-                             <motion.div initial={{opacity:0, scale:0.8, x: -20}} animate={{opacity:1, scale:1, x: 0}} exit={{opacity:0, scale:0.8}} className="absolute top-[75%] left-[30%] -translate-y-1/2 bg-white p-3 rounded-xl rounded-bl-none shadow-md border border-gray-100 flex items-center gap-3 z-20">
-                                <FileText size={16} className="text-cyan-300"/>
-                                <span className="text-xs text-gray-400 font-mono">Draft B...</span>
-                                <motion.div initial={{scale:0}} animate={{scale:1}} transition={{delay:0.5}}><X size={14} className="text-red-400"/></motion.div>
-                            </motion.div>
-                        </>
-                    )}
-                </AnimatePresence>
+                {/* Column 3: Output */}
+                <div className="relative border-l border-gray-100/50 bg-gray-50/30 flex flex-col justify-around items-center py-8">
+                     {/* Feedback Loop Placeholders */}
+                </div>
+            </div>
 
-                {/* Ht Orbs Movement */}
+            {/* --- 动画层 (Overlay) --- */}
+            <div className="absolute inset-0 pointer-events-none">
+                {/* Ht Orbs: Agent -> System */}
                 {(step === 1 || step === 2) && (
                     <>
                         <motion.div
-                            className="absolute w-12 h-12 rounded-full bg-indigo-500 shadow-xl shadow-indigo-300/50 z-20 flex items-center justify-center text-white border-2 border-white"
-                            style={{ transform: 'translate(-50%, -50%)' }}
-                            initial={step === 1 ? { left: "15%", top: "25%" } : { left: "50%", top: "50%" }}
-                            animate={step === 1 ? { left: "50%", top: "50%" } : { left: "50%", top: "50%", scale: 0.5, opacity: 0 }}
-                            transition={{ duration: 0.8, ease: "easeInOut" }}
-                        >
-                            <Brain size={18} />
-                        </motion.div>
-                        <motion.div
-                            className="absolute w-12 h-12 rounded-full bg-cyan-500 shadow-xl shadow-cyan-300/50 z-20 flex items-center justify-center text-white border-2 border-white"
-                            style={{ transform: 'translate(-50%, -50%)' }}
-                            initial={step === 1 ? { left: "15%", top: "75%" } : { left: "50%", top: "50%" }}
-                            animate={step === 1 ? { left: "50%", top: "50%" } : { left: "50%", top: "50%", scale: 0.5, opacity: 0 }}
-                            transition={{ duration: 0.8, delay: 0.1, ease: "easeInOut" }}
-                        >
-                            <Brain size={18} />
-                        </motion.div>
+                            className="absolute w-8 h-8 rounded-full bg-indigo-500 shadow-lg z-20"
+                            initial={{ left: "16%", top: "25%" }}
+                            animate={{ left: "50%", top: "50%", scale: 0.5, opacity: 0 }}
+                            transition={{ duration: 0.8 }}
+                        />
+                         <motion.div
+                            className="absolute w-8 h-8 rounded-full bg-cyan-500 shadow-lg z-20"
+                            initial={{ left: "16%", top: "75%" }}
+                            animate={{ left: "50%", top: "50%", scale: 0.5, opacity: 0 }}
+                            transition={{ duration: 0.8 }}
+                        />
                     </>
                 )}
 
-                {/* Central Encoder - Step 2 only */}
-                <AnimatePresence>
-                {step === 2 && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        className="absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-white/80 backdrop-blur-md rounded-3xl border border-indigo-100 flex flex-col items-center justify-center z-0 shadow-2xl"
-                    >
-                        <Cpu size={48} className="text-indigo-600 mb-2" />
-                        <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Encoder</span>
-                    </motion.div>
-                )}
-                </AnimatePresence>
-
-                {/* Thought Particles (Step 2 -> 3) */}
+                {/* Processing Particles: Center Chaos */}
                 {(step === 2 || step === 3) && (
-                    <div className="absolute inset-0 pointer-events-none">
-                        {[...Array(15)].map((_, i) => {
-                            const type = i % 3;
-                            const colorClass = type === 0 ? "text-purple-500" : (type === 1 ? "text-indigo-500" : "text-cyan-500");
-                            const Icon = type === 0 ? Lightbulb : (type === 1 ? Sparkles : Zap);
-
-                            // 目标位置：严格对齐 Agents 和 Center 的百分比坐标
-                            const targetTop = type === 0 ? "50%" : (type === 1 ? "25%" : "75%"); // A: 25%, Center: 50%, B: 75%
-                            const targetLeft = type === 0 ? "50%" : "60%"; // 私有思维向右侧偏移
-
-                            return (
-                                <motion.div
-                                    key={i}
-                                    className={`absolute flex items-center justify-center w-8 h-8 bg-white rounded-full shadow-sm border border-slate-100 ${colorClass}`}
-                                    style={{
-                                        marginTop: "-16px",
-                                        marginLeft: "-16px"
-                                    }}
-                                    initial={{ top: "50%", left: "50%", opacity: 0, scale: 0 }}
-                                    animate={step === 2 ? {
-                                        // 混合阶段：在中心随机散布
-                                        x: (Math.random() - 0.5) * 150,
-                                        y: (Math.random() - 0.5) * 150,
-                                        opacity: 1,
-                                        scale: 1
-                                    } : {
-                                        // 路由阶段：移动到指定百分比高度
-                                        top: targetTop,
-                                        left: targetLeft,
-                                        x: (Math.random() - 0.5) * 30,
-                                        y: (Math.random() - 0.5) * 20,
-                                        opacity: 1,
-                                        scale: 1
-                                    }}
-                                    transition={{ duration: 0.8, type: "spring", stiffness: 50 }}
-                                >
-                                    <Icon size={14} fill="currentColor" className="opacity-20" />
-                                    <Icon size={14} className="absolute" strokeWidth={2.5} />
-                                </motion.div>
-                            );
-                        })}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32">
+                        {[...Array(8)].map((_, i) => (
+                             <motion.div
+                                key={i}
+                                className={`absolute w-3 h-3 rounded-full ${i%2===0 ? 'bg-purple-500' : 'bg-rose-400'}`}
+                                initial={{ x: 0, y: 0, opacity: 1 }}
+                                animate={step === 2 ? {
+                                    x: Math.cos(i) * 40,
+                                    y: Math.sin(i) * 40,
+                                } : {
+                                    // Step 3: Route back
+                                    x: -150, // Move left back to agents
+                                    y: i%2===0 ? -100 : 100, // Split top/bottom
+                                    opacity: 0
+                                }}
+                                transition={{ duration: 0.8 }}
+                            />
+                        ))}
                     </div>
                 )}
 
-                {/* Step 3 Label */}
-                {step === 3 && (
-                    <motion.div
-                        initial={{opacity:0, y: 10}}
-                        animate={{opacity:1, y: 0}}
-                        className="absolute top-[40%] left-[50%] -translate-x-1/2 bg-white/90 backdrop-blur border border-purple-200 px-5 py-2 rounded-full flex items-center gap-2 shadow-lg shadow-purple-100/50 z-30"
-                    >
-                        <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-                        <span className="text-xs font-bold text-purple-700">Consensus Extracted</span>
-                    </motion.div>
-                )}
-
-                {/* Step 4: Injection (Pt Chips) */}
+                {/* Pt Chips: System -> Agent */}
                 {step === 4 && (
-                    <>
-                        {/* Chip to A */}
+                     <>
                         <motion.div
-                            className="absolute w-14 h-10 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-300/50 z-30 border border-indigo-400"
-                            style={{ transform: 'translate(-50%, -50%)' }}
-                            initial={{ left: "60%", top: "25%", scale: 0, opacity: 0 }}
-                            animate={{ left: "15%", top: "25%", scale: 1, opacity: 1 }}
-                            transition={{ duration: 0.8, ease: "easeInOut" }}
-                        >
-                            <span className="text-xs text-white font-bold font-mono">Pt</span>
-                            <div className="absolute -right-1 w-1 h-4 bg-indigo-400 rounded-r-sm" />
-                        </motion.div>
-
-                        {/* Chip to B */}
+                            className="absolute w-12 h-8 bg-indigo-600 rounded flex items-center justify-center text-[10px] text-white font-bold z-20 shadow-lg"
+                            initial={{ left: "50%", top: "50%", opacity: 0 }}
+                            animate={{ left: "20%", top: "25%", opacity: 1 }}
+                            transition={{ duration: 0.8 }}
+                        >Pt</motion.div>
                          <motion.div
-                            className="absolute w-14 h-10 bg-cyan-600 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-300/50 z-30 border border-cyan-400"
-                            style={{ transform: 'translate(-50%, -50%)' }}
-                            initial={{ left: "60%", top: "75%", scale: 0, opacity: 0 }}
-                            animate={{ left: "15%", top: "75%", scale: 1, opacity: 1 }}
-                            transition={{ duration: 0.8, ease: "easeInOut" }}
-                        >
-                            <span className="text-xs text-white font-bold font-mono">Pt</span>
-                            <div className="absolute -right-1 w-1 h-4 bg-cyan-400 rounded-r-sm" />
-                        </motion.div>
+                            className="absolute w-12 h-8 bg-cyan-600 rounded flex items-center justify-center text-[10px] text-white font-bold z-20 shadow-lg"
+                            initial={{ left: "50%", top: "50%", opacity: 0 }}
+                            animate={{ left: "20%", top: "75%", opacity: 1 }}
+                            transition={{ duration: 0.8 }}
+                        >Pt</motion.div>
                     </>
                 )}
 
-                {/* Step 5: Final */}
+                {/* Final Generation */}
                 <AnimatePresence>
-                    {step === 5 && (
-                        <>
-                            <motion.div
-                                initial={{ scale: 0, opacity: 0, x: -20 }}
-                                animate={{ scale: 1, opacity: 1, x: 0 }}
-                                className="absolute left-[25%] top-[25%] -translate-y-1/2 px-4 py-3 bg-white rounded-xl shadow-lg border border-green-200 flex items-center gap-3 z-20"
-                            >
-                                <div className="p-1.5 bg-green-50 rounded-lg text-green-600"><FileText size={16} /></div>
-                                <div className="text-xs font-bold text-gray-700">Reply_v2.pdf</div>
-                            </motion.div>
-                             <motion.div
-                                initial={{ scale: 0, opacity: 0, x: -20 }}
-                                animate={{ scale: 1, opacity: 1, x: 0 }}
-                                transition={{ delay: 0.1 }}
-                                className="absolute left-[25%] top-[75%] -translate-y-1/2 px-4 py-3 bg-white rounded-xl shadow-lg border border-green-200 flex items-center gap-3 z-20"
-                            >
-                                <div className="p-1.5 bg-green-50 rounded-lg text-green-600"><FileText size={16} /></div>
-                                <div className="text-xs font-bold text-gray-700">Reply_v2.pdf</div>
-                            </motion.div>
-
-                            <motion.div
-                                initial={{ scale: 0.9, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                transition={{ delay: 0.5 }}
-                                className="absolute right-[10%] top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-xl px-8 py-6 rounded-2xl border border-green-100 text-center shadow-2xl shadow-green-100"
-                            >
-                                <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500 shadow-inner">
-                                    <CheckCircle2 size={32} />
-                                </div>
-                                <div className="text-xl font-bold text-gray-900">Consensus Reached</div>
-                                <div className="text-sm text-gray-500 mt-1">Accuracy +17.2%</div>
-                            </motion.div>
-                        </>
-                    )}
+                {step === 5 && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-30"
+                    >
+                         <div className="bg-white p-8 rounded-3xl shadow-2xl border border-green-100 flex flex-col items-center">
+                            <CheckCircle2 className="w-16 h-16 text-green-500 mb-4" />
+                            <h3 className="text-2xl font-bold text-gray-900">Consensus Reached</h3>
+                         </div>
+                    </motion.div>
+                )}
                 </AnimatePresence>
-
             </div>
+
           </div>
         </div>
       </div>
@@ -920,7 +841,6 @@ const ResultsSection = () => {
                     通过非参数下的潜在思维解耦，我们在不损失信息的前提下实现了高效的多智能体协作。
                     </p>
                 </div>
-                {/* 装饰圆环 */}
                 <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
               </div>
            </div>
