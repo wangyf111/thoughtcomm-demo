@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import {
   Brain,
@@ -16,26 +16,19 @@ import {
   ChevronDown,
   GitMerge,
   Share2,
-  HelpCircle,
   Mic2,
   History,
-  ShieldCheck,
   Users,
-  ArrowRight,
   ChevronLeft,
   ChevronRight,
   Sparkles,
-  Lightbulb,
-  Workflow
+  Lightbulb
 } from 'lucide-react';
 
-// --- 样式常量 & 工具 ---
+// --- 样式常量 ---
 const THEME = {
   bg: "bg-slate-50",
   card: "bg-white shadow-xl shadow-slate-200/60 border border-slate-100",
-  accentA: "indigo", // Agent A 主色
-  accentB: "cyan",   // Agent B 主色
-  accentShared: "purple" // Shared 主色
 };
 
 // 统一的板块进入动画封装
@@ -47,7 +40,7 @@ const SectionWrapper = ({ children, className = "", id = "" }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className={`relative py-32 px-6 md:px-12 overflow-hidden ${className}`}
+      className={`relative py-24 md:py-32 px-6 md:px-12 overflow-hidden ${className}`}
     >
       {children}
     </motion.section>
@@ -67,7 +60,6 @@ const Hero = () => {
 
   return (
     <section className="min-h-screen flex flex-col justify-center items-center relative overflow-hidden bg-white">
-      {/* 动态背景装饰 */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
            style={{ backgroundImage: 'radial-gradient(#4f46e5 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
       </div>
@@ -76,7 +68,7 @@ const Hero = () => {
 
       <motion.div
         style={{ y: y1, opacity }}
-        className="z-10 max-w-5xl text-center"
+        className="z-10 max-w-5xl text-center px-4"
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -89,19 +81,19 @@ const Hero = () => {
           </span>
         </motion.div>
 
-        <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-slate-900 mb-8 leading-[1.1]">
+        <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-slate-900 mb-8 leading-[1.1]">
           THOUGHT<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-cyan-500">COMM</span>
         </h1>
 
-        <p className="text-xl md:text-3xl text-slate-600 font-light mb-10 max-w-3xl mx-auto leading-relaxed">
+        <p className="text-lg md:text-3xl text-slate-600 font-light mb-10 max-w-3xl mx-auto leading-relaxed">
           超越语言符号：<br className="md:hidden"/>多智能体协作中的<strong className="text-slate-900 font-semibold">思维通信</strong>范式
         </p>
 
-        <div className="flex justify-center gap-8 text-slate-400 font-medium text-sm md:text-base tracking-wide uppercase">
+        <div className="flex flex-wrap justify-center gap-4 md:gap-8 text-slate-400 font-medium text-xs md:text-base tracking-wide uppercase">
           <p>CMU</p>
-          <span>•</span>
+          <span className="hidden md:inline">•</span>
           <p>Meta AI</p>
-          <span>•</span>
+          <span className="hidden md:inline">•</span>
           <p>MBZUAI</p>
         </div>
       </motion.div>
@@ -125,23 +117,23 @@ const ProblemVsSolution = () => {
     <SectionWrapper className="bg-slate-50 border-t border-slate-100">
       <ConnectorLine />
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-20">
+        <div className="text-center mb-16 md:mb-20">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">为什么要用思维通信？</h2>
           <p className="text-slate-500 max-w-2xl mx-auto text-lg">语言是人类协作的桥梁，但对 AI 来说，它是一条<span className="text-rose-500 font-medium">狭窄且有损</span>的小路。</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-12 items-stretch">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-stretch">
           {/* 传统模式 */}
           <motion.div
             whileHover={{ y: -5 }}
-            className={`${THEME.card} p-10 rounded-3xl relative overflow-hidden group transition-all duration-300`}
+            className={`${THEME.card} p-8 md:p-10 rounded-3xl relative overflow-hidden group transition-all duration-300`}
           >
             <div className="absolute -right-12 -top-12 opacity-5 group-hover:opacity-10 transition-opacity duration-500">
               <MessageSquare size={240} className="text-slate-900" />
             </div>
             <div className="flex items-center gap-4 mb-8">
               <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-600"><MessageSquare size={24} /></div>
-              <h3 className="text-2xl font-bold text-slate-900">传统语言通信</h3>
+              <h3 className="text-xl md:text-2xl font-bold text-slate-900">传统语言通信</h3>
             </div>
 
             <div className="space-y-6">
@@ -149,14 +141,14 @@ const ProblemVsSolution = () => {
                 <div className="flex-shrink-0 w-6 h-6 mt-1 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-xs font-bold">✕</div>
                 <div>
                   <strong className="block text-slate-900 text-lg mb-1">信息有损 (Lossy)</strong>
-                  <span className="text-slate-500 leading-relaxed">将高维思维压缩成低维文字，丢失底层逻辑与置信度。</span>
+                  <span className="text-slate-500 leading-relaxed text-sm md:text-base">将高维思维压缩成低维文字，丢失底层逻辑与置信度。</span>
                 </div>
               </div>
               <div className="flex gap-5 items-start">
                  <div className="flex-shrink-0 w-6 h-6 mt-1 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-xs font-bold">✕</div>
                 <div>
                   <strong className="block text-slate-900 text-lg mb-1">模糊间接 (Ambiguous)</strong>
-                  <span className="text-slate-500 leading-relaxed">接收者需反向猜测发送者的意图，容易产生误解。</span>
+                  <span className="text-slate-500 leading-relaxed text-sm md:text-base">接收者需反向猜测发送者的意图，容易产生误解。</span>
                 </div>
               </div>
             </div>
@@ -165,14 +157,14 @@ const ProblemVsSolution = () => {
           {/* THOUGHTCOMM */}
           <motion.div
             whileHover={{ y: -5 }}
-            className="bg-white p-10 rounded-3xl shadow-2xl shadow-indigo-200/40 border border-indigo-100 relative overflow-hidden group transition-all duration-300 ring-1 ring-indigo-50"
+            className="bg-white p-8 md:p-10 rounded-3xl shadow-2xl shadow-indigo-200/40 border border-indigo-100 relative overflow-hidden group transition-all duration-300 ring-1 ring-indigo-50"
           >
             <div className="absolute -right-12 -top-12 opacity-5 group-hover:opacity-10 transition-opacity duration-500">
               <Brain size={240} className="text-indigo-600" />
             </div>
             <div className="flex items-center gap-4 mb-8">
               <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600"><Zap size={24} /></div>
-              <h3 className="text-2xl font-bold text-slate-900">THOUGHTCOMM</h3>
+              <h3 className="text-xl md:text-2xl font-bold text-slate-900">THOUGHTCOMM</h3>
             </div>
 
             <div className="space-y-6">
@@ -180,14 +172,14 @@ const ProblemVsSolution = () => {
                 <div className="flex-shrink-0 w-6 h-6 mt-1 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">✓</div>
                 <div>
                   <strong className="block text-slate-900 text-lg mb-1">思维直连 (Direct)</strong>
-                  <span className="text-slate-500 leading-relaxed">直接交换潜在变量 <code className="bg-indigo-50 px-1 py-0.5 rounded text-indigo-700 font-mono text-sm">Z_t</code>，无损传递意图。</span>
+                  <span className="text-slate-500 leading-relaxed text-sm md:text-base">直接交换潜在变量 <code className="bg-indigo-50 px-1 py-0.5 rounded text-indigo-700 font-mono text-sm">Z_t</code>，无损传递意图。</span>
                 </div>
               </div>
               <div className="flex gap-5 items-start">
                  <div className="flex-shrink-0 w-6 h-6 mt-1 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">✓</div>
                 <div>
                   <strong className="block text-slate-900 text-lg mb-1">结构解耦 (Disentangled)</strong>
-                  <span className="text-slate-500 leading-relaxed">数学上区分“共识”与“私见”，自动路由至相关智能体。</span>
+                  <span className="text-slate-500 leading-relaxed text-sm md:text-base">数学上区分“共识”与“私见”，自动路由至相关智能体。</span>
                 </div>
               </div>
             </div>
@@ -208,10 +200,10 @@ const TheoryAnimation = () => {
   }, []);
 
   return (
-    <div className="h-80 bg-slate-50/50 rounded-3xl border border-slate-200 relative overflow-hidden flex flex-col items-center justify-center shadow-inner group">
+    <div className="h-[400px] w-full bg-slate-50/50 rounded-3xl border border-slate-200 relative overflow-hidden flex flex-col items-center justify-center shadow-inner group">
         <div className="absolute inset-0 opacity-10 pointer-events-none" style={{backgroundImage: 'linear-gradient(#64748b 1px, transparent 1px), linear-gradient(90deg, #64748b 1px, transparent 1px)', backgroundSize: '24px 24px'}}></div>
 
-        <div className="absolute top-4 left-4 text-xs font-mono text-slate-400 bg-white/50 px-2 py-1 rounded backdrop-blur-sm border border-slate-100">
+        <div className="absolute top-4 left-4 text-xs font-mono text-slate-400 bg-white/50 px-2 py-1 rounded backdrop-blur-sm border border-slate-100 z-10">
             Latent Space Visualization
         </div>
 
@@ -226,7 +218,6 @@ const TheoryAnimation = () => {
                 >
                     <div className="text-sm font-bold text-slate-600 mb-4 bg-white px-3 py-1 rounded-full shadow-sm border border-slate-100">Mixed Signal (Ht)</div>
                     <div className="relative w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-lg border border-slate-100">
-                        {/* 混合的杂乱粒子 */}
                         {[...Array(12)].map((_, i) => (
                             <motion.div
                                 key={i}
@@ -268,16 +259,14 @@ const TheoryAnimation = () => {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
-                    className="w-full px-12 flex justify-between items-center z-10 h-full pt-8"
+                    className="w-full px-4 md:px-12 flex justify-between items-center z-10 h-full pt-8"
                 >
-                    {/* Private A + Routing */}
                     <div className="flex flex-col items-center relative">
                         <div className="mb-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Agent A</div>
                         <div className="w-16 h-16 rounded-full border-2 border-rose-100 bg-white flex items-center justify-center shadow-md relative z-10">
                             <div className="w-8 h-8 bg-rose-500 rounded-full shadow-lg shadow-rose-200" />
                         </div>
-                        <span className="mt-3 text-xs font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded">Private A</span>
-                        {/* Routing Lines */}
+                        <span className="mt-3 text-xs font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded border border-rose-100">Private A</span>
                         <motion.svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[100px] overflow-visible pointer-events-none -z-10">
                              <motion.path
                                 d="M 0 0 L 0 -40"
@@ -287,7 +276,6 @@ const TheoryAnimation = () => {
                         </motion.svg>
                     </div>
 
-                    {/* Shared + Routing */}
                     <div className="flex flex-col items-center relative -mt-4">
                         <div className="mb-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Global</div>
                         <div className="w-24 h-24 rounded-full border-2 border-purple-100 bg-white flex items-center justify-center shadow-xl relative z-10">
@@ -295,16 +283,13 @@ const TheoryAnimation = () => {
                                 Zt
                             </div>
                         </div>
-                        <span className="mt-3 text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded">Shared Truth</span>
-                        {/* Routing Lines to A and B */}
+                        <span className="mt-3 text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded border border-purple-100">Shared Truth</span>
                         <motion.svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[100px] overflow-visible pointer-events-none -z-10">
-                             {/* To A */}
                              <motion.path
                                 d="M 0 0 Q -80 0 -120 -20"
                                 fill="none" stroke="#9333ea" strokeWidth="3"
                                 initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1 }}
                              />
-                             {/* To B */}
                              <motion.path
                                 d="M 0 0 Q 80 0 120 -20"
                                 fill="none" stroke="#9333ea" strokeWidth="3"
@@ -313,14 +298,12 @@ const TheoryAnimation = () => {
                         </motion.svg>
                     </div>
 
-                    {/* Private B + Routing */}
                     <div className="flex flex-col items-center relative">
                         <div className="mb-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Agent B</div>
                          <div className="w-16 h-16 rounded-full border-2 border-indigo-100 bg-white flex items-center justify-center shadow-md relative z-10">
                             <div className="w-8 h-8 bg-indigo-500 rounded-full shadow-lg shadow-indigo-200" />
                         </div>
-                        <span className="mt-3 text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">Private B</span>
-                         {/* Routing Lines */}
+                        <span className="mt-3 text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded border border-indigo-100">Private B</span>
                          <motion.svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[100px] overflow-visible pointer-events-none -z-10">
                              <motion.path
                                 d="M 0 0 L 0 -40"
@@ -503,8 +486,8 @@ const WorkflowDemo = () => {
             </div>
           </div>
 
-          {/* 右侧：动画演示舞台 (Fixed Layout) */}
-          <div className="lg:col-span-8 bg-white rounded-[2rem] border border-slate-200 h-[450px] relative overflow-hidden shadow-inner group">
+          {/* 右侧：动画演示舞台 (Fixed Aspect Ratio Container) */}
+          <div className="lg:col-span-8 bg-white rounded-[2rem] border border-slate-200 aspect-[4/3] md:aspect-[16/9] relative overflow-hidden shadow-inner group">
             {/* Background Grid */}
             <div className="absolute inset-0 opacity-[0.05]" style={{backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '24px 24px'}}></div>
             {/* Ambient Glows */}
@@ -513,33 +496,33 @@ const WorkflowDemo = () => {
 
             <div className="absolute inset-0 flex items-center justify-center">
 
-                {/* Agent Avatars & Labels */}
-                <div className="absolute left-12 top-[25%] -translate-y-1/2 flex flex-col items-center z-10 w-24">
+                {/* Agent Avatars & Labels (Fixed Positions) */}
+                <div className="absolute left-[10%] top-[25%] -translate-y-1/2 flex flex-col items-center z-10 w-24">
                     <div className="w-16 h-16 rounded-2xl bg-white border border-indigo-100 shadow-xl flex items-center justify-center text-indigo-600 font-bold text-xl relative overflow-hidden">
                         <span className="z-10">A</span>
                         <div className="absolute inset-0 bg-indigo-50/50 z-0"></div>
                     </div>
-                    <span className="mt-2 text-xs font-bold text-indigo-300 uppercase tracking-widest">Agent A</span>
+                    <span className="mt-2 text-xs font-bold text-indigo-300 uppercase tracking-widest bg-white/80 px-2 py-1 rounded backdrop-blur-sm">Agent A</span>
                 </div>
 
-                <div className="absolute left-12 top-[75%] -translate-y-1/2 flex flex-col items-center z-10 w-24">
+                <div className="absolute left-[10%] top-[75%] -translate-y-1/2 flex flex-col items-center z-10 w-24">
                     <div className="w-16 h-16 rounded-2xl bg-white border border-cyan-100 shadow-xl flex items-center justify-center text-cyan-600 font-bold text-xl relative overflow-hidden">
                         <span className="z-10">B</span>
                         <div className="absolute inset-0 bg-cyan-50/50 z-0"></div>
                     </div>
-                    <span className="mt-2 text-xs font-bold text-cyan-300 uppercase tracking-widest">Agent B</span>
+                    <span className="mt-2 text-xs font-bold text-cyan-300 uppercase tracking-widest bg-white/80 px-2 py-1 rounded backdrop-blur-sm">Agent B</span>
                 </div>
 
                 {/* Step 1: Drafts */}
                 <AnimatePresence>
                     {step === 0 && (
                         <>
-                            <motion.div initial={{opacity:0, scale:0.8, x: -20}} animate={{opacity:1, scale:1, x: 0}} exit={{opacity:0, scale:0.8}} className="absolute top-[25%] left-36 -translate-y-1/2 bg-white p-3 rounded-xl rounded-tl-none shadow-md border border-slate-100 flex items-center gap-3 z-0">
+                            <motion.div initial={{opacity:0, scale:0.8, x: -20}} animate={{opacity:1, scale:1, x: 0}} exit={{opacity:0, scale:0.8}} className="absolute top-[25%] left-[25%] -translate-y-1/2 bg-white p-3 rounded-xl rounded-tl-none shadow-md border border-slate-100 flex items-center gap-3 z-20">
                                 <FileText size={16} className="text-indigo-300"/>
                                 <span className="text-xs text-slate-400 font-mono">Draft A...</span>
                                 <motion.div initial={{scale:0}} animate={{scale:1}} transition={{delay:0.5}}><X size={14} className="text-red-400"/></motion.div>
                             </motion.div>
-                             <motion.div initial={{opacity:0, scale:0.8, x: -20}} animate={{opacity:1, scale:1, x: 0}} exit={{opacity:0, scale:0.8}} className="absolute top-[75%] left-36 -translate-y-1/2 bg-white p-3 rounded-xl rounded-bl-none shadow-md border border-slate-100 flex items-center gap-3 z-0">
+                             <motion.div initial={{opacity:0, scale:0.8, x: -20}} animate={{opacity:1, scale:1, x: 0}} exit={{opacity:0, scale:0.8}} className="absolute top-[75%] left-[25%] -translate-y-1/2 bg-white p-3 rounded-xl rounded-bl-none shadow-md border border-slate-100 flex items-center gap-3 z-20">
                                 <FileText size={16} className="text-cyan-300"/>
                                 <span className="text-xs text-slate-400 font-mono">Draft B...</span>
                                 <motion.div initial={{scale:0}} animate={{scale:1}} transition={{delay:0.5}}><X size={14} className="text-red-400"/></motion.div>
@@ -553,16 +536,16 @@ const WorkflowDemo = () => {
                     <>
                         <motion.div
                             className="absolute w-12 h-12 rounded-full bg-indigo-500 shadow-xl shadow-indigo-300/50 z-20 flex items-center justify-center text-white border-2 border-white"
-                            initial={step === 1 ? { left: 140, top: "25%", y: "-50%" } : { left: "50%", top: "50%", x: "-50%", y: "-50%" }}
-                            animate={step === 1 ? { x: 20 } : { left: "50%", top: "50%", x: "-50%", y: "-50%", scale: 0.5, opacity: 0 }}
+                            initial={step === 1 ? { left: "25%", top: "25%", y: "-50%" } : { left: "50%", top: "50%", x: "-50%", y: "-50%" }}
+                            animate={step === 1 ? { x: 0 } : { left: "50%", top: "50%", x: "-50%", y: "-50%", scale: 0.5, opacity: 0 }}
                             transition={{ duration: 0.8 }}
                         >
                             <Brain size={18} />
                         </motion.div>
                         <motion.div
                             className="absolute w-12 h-12 rounded-full bg-cyan-500 shadow-xl shadow-cyan-300/50 z-20 flex items-center justify-center text-white border-2 border-white"
-                            initial={step === 1 ? { left: 140, top: "75%", y: "-50%" } : { left: "50%", top: "50%", x: "-50%", y: "-50%" }}
-                            animate={step === 1 ? { x: 20 } : { left: "50%", top: "50%", x: "-50%", y: "-50%", scale: 0.5, opacity: 0 }}
+                            initial={step === 1 ? { left: "25%", top: "75%", y: "-50%" } : { left: "50%", top: "50%", x: "-50%", y: "-50%" }}
+                            animate={step === 1 ? { x: 0 } : { left: "50%", top: "50%", x: "-50%", y: "-50%", scale: 0.5, opacity: 0 }}
                             transition={{ duration: 0.8, delay: 0.1 }}
                         >
                             <Brain size={18} />
@@ -587,36 +570,42 @@ const WorkflowDemo = () => {
 
                 {/* Thought Particles (Step 2 -> 3) - REDESIGNED */}
                 {(step === 2 || step === 3) && (
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 pointer-events-none">
+                    <div className="absolute inset-0 pointer-events-none">
                         {[...Array(15)].map((_, i) => {
-                            // Assign types: 0=Shared, 1=Private A, 2=Private B
                             const type = i % 3;
-                            // Colors
                             const colorClass = type === 0 ? "text-purple-500" : (type === 1 ? "text-indigo-500" : "text-cyan-500");
                             const Icon = type === 0 ? Lightbulb : (type === 1 ? Sparkles : Zap);
 
-                            // Target positions relative to container center
-                            // 25% of 450px = 112.5px
-                            // Center is 0.
-                            // A target: -112.5px (Up). B target: +112.5px (Down). Center target: 0.
-                            const targetY = type === 0 ? 0 : (type === 1 ? -112.5 : 112.5);
-                            const targetX = type === 0 ? 0 : 100; // Move private thoughts slightly right
+                            // Align targets to relative container percentages
+                            const targetTop = type === 0 ? "50%" : (type === 1 ? "25%" : "75%");
+                            const targetLeft = type === 0 ? "50%" : "70%";
 
                             return (
                                 <motion.div
                                     key={i}
-                                    className={`absolute left-1/2 top-1/2 flex items-center justify-center w-8 h-8 bg-white rounded-full shadow-sm border border-slate-100 ${colorClass}`}
+                                    className={`absolute flex items-center justify-center w-8 h-8 bg-white rounded-full shadow-sm border border-slate-100 ${colorClass}`}
+                                    style={{
+                                        // Start at center
+                                        top: "50%",
+                                        left: "50%",
+                                        marginTop: "-16px",
+                                        marginLeft: "-16px"
+                                    }}
                                     initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
                                     animate={step === 2 ? {
-                                        // Chaos Phase
-                                        x: (Math.random() - 0.5) * 100,
-                                        y: (Math.random() - 0.5) * 100,
+                                        // Chaos
+                                        x: (Math.random() - 0.5) * 150,
+                                        y: (Math.random() - 0.5) * 150,
                                         opacity: 1,
                                         scale: 1
                                     } : {
-                                        // Alignment Phase
-                                        x: targetX + (Math.random() - 0.5) * 40,
-                                        y: targetY + (Math.random() - 0.5) * 20, // Tighter cluster
+                                        // Alignment: Move using Calc to be responsive
+                                        // Note: We use pixel offsets from center for simplicity in this absolute context
+                                        // Center is (0,0). Top 25% is approx -25% height.
+                                        top: targetTop,
+                                        left: targetLeft,
+                                        x: (Math.random() - 0.5) * 20,
+                                        y: (Math.random() - 0.5) * 20,
                                         opacity: 1,
                                         scale: 1
                                     }}
@@ -630,15 +619,15 @@ const WorkflowDemo = () => {
                     </div>
                 )}
 
-                {/* Step 3 Label - LOWERED & STYLED */}
+                {/* Step 3 Label */}
                 {step === 3 && (
                     <motion.div
                         initial={{opacity:0, y: 10}}
                         animate={{opacity:1, y: 0}}
-                        className="absolute top-[35%] left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur border border-purple-200 px-5 py-2 rounded-full flex items-center gap-2 shadow-lg shadow-purple-100/50 z-30"
+                        className="absolute top-[40%] left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur border border-purple-200 px-5 py-2 rounded-full flex items-center gap-2 shadow-lg shadow-purple-100/50 z-30"
                     >
                         <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-                        <span className="text-xs font-bold text-purple-700">Consensus Extracted (Theorem 1)</span>
+                        <span className="text-xs font-bold text-purple-700">Consensus Extracted</span>
                     </motion.div>
                 )}
 
@@ -647,8 +636,8 @@ const WorkflowDemo = () => {
                     <>
                         {/* Chip to A */}
                         <motion.div
-                            initial={{ opacity: 0, left: "50%", top: "50%", x: "-50%", y: "-50%", scale: 0 }}
-                            animate={{ opacity: 1, left: 140, top: "25%", x: 0, y: "-50%", scale: 1 }}
+                            initial={{ opacity: 0, left: "70%", top: "25%", x: "-50%", y: "-50%", scale: 0 }}
+                            animate={{ opacity: 1, left: "25%", top: "25%", x: 0, y: "-50%", scale: 1 }}
                             className="absolute w-14 h-10 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-300/50 z-30 border border-indigo-400"
                         >
                             <span className="text-xs text-white font-bold font-mono">Pt</span>
@@ -657,9 +646,8 @@ const WorkflowDemo = () => {
 
                         {/* Chip to B */}
                          <motion.div
-                            initial={{ opacity: 0, left: "50%", top: "50%", x: "-50%", y: "-50%", scale: 0 }}
-                            // Fixed Alignment
-                            animate={{ opacity: 1, left: 140, top: "75%", x: 0, y: "-50%", scale: 1 }}
+                            initial={{ opacity: 0, left: "70%", top: "75%", x: "-50%", y: "-50%", scale: 0 }}
+                            animate={{ opacity: 1, left: "25%", top: "75%", x: 0, y: "-50%", scale: 1 }}
                             className="absolute w-14 h-10 bg-cyan-600 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-300/50 z-30 border border-cyan-400"
                         >
                             <span className="text-xs text-white font-bold font-mono">Pt</span>
@@ -675,7 +663,7 @@ const WorkflowDemo = () => {
                             <motion.div
                                 initial={{ scale: 0, opacity: 0, x: -20 }}
                                 animate={{ scale: 1, opacity: 1, x: 0 }}
-                                className="absolute left-40 top-[25%] -translate-y-1/2 px-4 py-3 bg-white rounded-xl shadow-lg border border-green-200 flex items-center gap-3 z-20"
+                                className="absolute left-[30%] top-[25%] -translate-y-1/2 px-4 py-3 bg-white rounded-xl shadow-lg border border-green-200 flex items-center gap-3 z-20"
                             >
                                 <div className="p-1.5 bg-green-50 rounded-lg text-green-600"><FileText size={16} /></div>
                                 <div className="text-xs font-bold text-slate-700">Reply_v2.pdf</div>
@@ -684,7 +672,7 @@ const WorkflowDemo = () => {
                                 initial={{ scale: 0, opacity: 0, x: -20 }}
                                 animate={{ scale: 1, opacity: 1, x: 0 }}
                                 transition={{ delay: 0.1 }}
-                                className="absolute left-40 top-[75%] -translate-y-1/2 px-4 py-3 bg-white rounded-xl shadow-lg border border-green-200 flex items-center gap-3 z-20"
+                                className="absolute left-[30%] top-[75%] -translate-y-1/2 px-4 py-3 bg-white rounded-xl shadow-lg border border-green-200 flex items-center gap-3 z-20"
                             >
                                 <div className="p-1.5 bg-green-50 rounded-lg text-green-600"><FileText size={16} /></div>
                                 <div className="text-xs font-bold text-slate-700">Reply_v2.pdf</div>
@@ -694,7 +682,7 @@ const WorkflowDemo = () => {
                                 initial={{ scale: 0.9, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 transition={{ delay: 0.5 }}
-                                className="absolute right-12 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-xl px-8 py-6 rounded-2xl border border-green-100 text-center shadow-2xl shadow-green-100"
+                                className="absolute right-[10%] top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-xl px-8 py-6 rounded-2xl border border-green-100 text-center shadow-2xl shadow-green-100"
                             >
                                 <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500 shadow-inner">
                                     <CheckCircle2 size={32} />
@@ -911,7 +899,7 @@ const ResultsSection = () => {
                     <Cpu className="text-cyan-600 w-8 h-8" />
                   </div>
                   <div className="text-4xl font-black text-slate-900 mb-2 tracking-tight">轻量化训练</div>
-                  {/* Corrected Text Here */}
+                  {/* Updated text here */}
                   <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">仅需训练自编码器与适配器</div>
               </motion.div>
 
