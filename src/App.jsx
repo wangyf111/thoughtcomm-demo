@@ -23,7 +23,10 @@ import {
   ChevronRight,
   Sparkles,
   Lightbulb,
-  ArrowRight
+  ArrowRight,
+  Database,
+  FileCheck,
+  Star
 } from 'lucide-react';
 
 // --- 样式配置 ---
@@ -381,53 +384,17 @@ const TheorySection = () => {
   );
 };
 
-// --- 组件：核心工作流演示 (重构版：管道化布局) ---
+// --- 组件：核心工作流演示 (重构版：具象化 + 管道) ---
 const WorkflowDemo = () => {
   const [step, setStep] = useState(0);
 
   const steps = [
-    {
-      title: "1. Drafting (草稿生成)",
-      desc: "智能体基于历史生成初步回复，仅用于暴露潜在意图，随后被废弃。",
-      color: "bg-gray-600",
-      bg: "bg-gray-100",
-      text: "text-gray-600"
-    },
-    {
-      title: "2. Snapshotting (提取状态)",
-      desc: "系统截取 Transformer 最后一层的隐藏状态 Ht，就像拍摄一张“思维快照”。",
-      color: "bg-indigo-600",
-      bg: "bg-indigo-50",
-      text: "text-indigo-600"
-    },
-    {
-      title: "3. Uncovering (思维解码)",
-      desc: "编码器将 Ht 映射到潜在空间。混合的思维像未分类的积木一样被倒出。",
-      color: "bg-purple-600",
-      bg: "bg-purple-50",
-      text: "text-purple-600"
-    },
-    {
-      title: "4. Routing (结构化路由)",
-      desc: "利用 Jacobian 掩码像筛子一样过滤，将“共识”与“私有杂念”物理分离。",
-      color: "bg-rose-600",
-      bg: "bg-rose-50",
-      text: "text-rose-600"
-    },
-    {
-      title: "5. Injection (思维注入)",
-      desc: "筛选后的思维被压缩成前缀向量 Pt，像芯片一样插入智能体大脑。",
-      color: "bg-cyan-600",
-      bg: "bg-cyan-50",
-      text: "text-cyan-600"
-    },
-    {
-      title: "6. Generation (最终生成)",
-      desc: "智能体带着被修正的意图 Pt，重新审视上下文，生成高质量共识回复。",
-      color: "bg-green-600",
-      bg: "bg-green-50",
-      text: "text-green-600"
-    }
+    { title: "1. Drafting", desc: "草稿生成", color: "bg-gray-600" },
+    { title: "2. Snapshotting", desc: "提取状态", color: "bg-indigo-600" },
+    { title: "3. Uncovering", desc: "思维解码", color: "bg-purple-600" },
+    { title: "4. Routing", desc: "结构化路由", color: "bg-rose-600" },
+    { title: "5. Injection", desc: "思维注入", color: "bg-cyan-600" },
+    { title: "6. Generation", desc: "最终生成", color: "bg-green-600" }
   ];
 
   return (
@@ -470,12 +437,18 @@ const WorkflowDemo = () => {
                 transition={{ duration: 0.4 }}
                 className="bg-white p-8 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50"
               >
-                <div className={`inline-block px-3 py-1 rounded-lg text-xs font-bold mb-4 uppercase tracking-wider ${steps[step].bg} ${steps[step].text}`}>
+                <div className={`inline-block px-3 py-1 rounded-lg text-xs font-bold mb-4 uppercase tracking-wider bg-black text-white`}>
                     Current Process
                 </div>
-                <h3 className={`text-2xl font-bold mb-4 text-gray-900`}>{steps[step].title}</h3>
-                <p className="text-gray-600 leading-relaxed text-lg">
-                  {steps[step].desc}
+                <h3 className={`text-2xl font-bold mb-2 text-gray-900`}>{steps[step].title}</h3>
+                <h4 className="text-lg font-medium text-gray-500 mb-4">{steps[step].desc}</h4>
+                <p className="text-gray-600 leading-relaxed text-sm">
+                  {step === 0 && "智能体基于历史生成初步回复，仅用于暴露潜在意图，随后被废弃。"}
+                  {step === 1 && "系统截取 Transformer 最后一层的隐藏状态 Ht，就像拍摄一张“思维快照”。"}
+                  {step === 2 && "编码器将 Ht 映射到潜在空间。混合的思维像未分类的积木一样被倒出。"}
+                  {step === 3 && "利用 Jacobian 掩码像筛子一样过滤，将“共识”与“私有杂念”物理分离。"}
+                  {step === 4 && "筛选后的思维被压缩成前缀向量 Pt，像芯片一样插入智能体大脑。"}
+                  {step === 5 && "智能体带着被修正的意图 Pt，重新审视上下文，生成高质量共识回复。"}
                 </p>
               </motion.div>
             </AnimatePresence>
@@ -497,133 +470,190 @@ const WorkflowDemo = () => {
             </div>
           </div>
 
-          {/* 右侧：动画演示舞台 (固定结构) */}
-          <div className="lg:col-span-8 bg-white rounded-[2rem] border border-gray-200 h-[450px] relative overflow-hidden shadow-inner group">
-            {/* 固定的三栏结构： Agent A/B (Left) -> System (Center) -> Output (Right) */}
-            <div className="absolute inset-0 grid grid-cols-3">
-                {/* Column 1: Agents */}
-                <div className="relative border-r border-gray-100/50 bg-gray-50/30 flex flex-col justify-around items-center py-8">
-                    {/* Agent A */}
-                    <div className="relative z-10 flex flex-col items-center">
-                         <div className="w-16 h-16 rounded-2xl bg-white border border-indigo-100 shadow-xl flex items-center justify-center text-indigo-600 font-bold text-xl mb-2">A</div>
-                         <span className="text-xs font-bold text-indigo-300 uppercase tracking-widest">Agent A</span>
-                         {/* Draft Bubble A */}
-                         <AnimatePresence>
-                             {step === 0 && (
-                                <motion.div initial={{opacity:0, x:-20}} animate={{opacity:1, x:0}} exit={{opacity:0}} className="absolute left-20 top-0 w-32 p-3 bg-white rounded-xl rounded-tl-none shadow-md border border-gray-100 text-xs text-gray-400">
-                                    Drafting...
-                                </motion.div>
-                             )}
-                         </AnimatePresence>
-                    </div>
+          {/* 右侧：动画演示舞台 (固定比例 + 绝对定位) */}
+          <div className="lg:col-span-8 bg-white rounded-[2rem] border border-gray-200 aspect-[16/9] relative overflow-hidden shadow-inner group">
+            <div className="absolute inset-0 opacity-[0.05]" style={{backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '24px 24px'}}></div>
 
-                    {/* Agent B */}
-                    <div className="relative z-10 flex flex-col items-center">
-                         <div className="w-16 h-16 rounded-2xl bg-white border border-cyan-100 shadow-xl flex items-center justify-center text-cyan-600 font-bold text-xl mb-2">B</div>
-                         <span className="text-xs font-bold text-cyan-300 uppercase tracking-widest">Agent B</span>
-                          {/* Draft Bubble B */}
-                          <AnimatePresence>
-                             {step === 0 && (
-                                <motion.div initial={{opacity:0, x:-20}} animate={{opacity:1, x:0}} exit={{opacity:0}} className="absolute left-20 top-0 w-32 p-3 bg-white rounded-xl rounded-tl-none shadow-md border border-gray-100 text-xs text-gray-400">
-                                    Drafting...
-                                </motion.div>
-                             )}
-                         </AnimatePresence>
-                    </div>
-                </div>
+            {/* 轨道系统 (SVG Paths) */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{zIndex: 0}}>
+                {/* Path A (Top 25%) -> Center (50%) */}
+                <path d="M 120 112.5 C 200 112.5, 200 225, 400 225" fill="none" stroke="#e0e7ff" strokeWidth="2" strokeDasharray="4 4" />
+                {/* Path B (Bottom 75%) -> Center (50%) */}
+                <path d="M 120 337.5 C 200 337.5, 200 225, 400 225" fill="none" stroke="#cffafe" strokeWidth="2" strokeDasharray="4 4" />
 
-                {/* Column 2: System / Latent Space */}
-                <div className="relative flex flex-col justify-center items-center">
-                    <div className={`w-48 h-48 rounded-full border-2 border-dashed ${step >= 2 ? "border-purple-300 animate-spin-slow" : "border-gray-200"} flex items-center justify-center transition-colors duration-500`}>
-                        {step >= 2 && <Cpu className="text-purple-500 w-12 h-12" />}
-                    </div>
-                    <span className="absolute bottom-8 text-xs font-bold text-gray-300 uppercase tracking-widest">ThoughtComm System</span>
-                </div>
+                {/* Return Path: Center -> A */}
+                <path d="M 400 225 C 300 225, 300 112.5, 120 112.5" fill="none" stroke={step >= 4 ? "#818cf8" : "transparent"} strokeWidth="2" />
+                {/* Return Path: Center -> B */}
+                <path d="M 400 225 C 300 225, 300 337.5, 120 337.5" fill="none" stroke={step >= 4 ? "#22d3ee" : "transparent"} strokeWidth="2" />
+            </svg>
 
-                {/* Column 3: Output */}
-                <div className="relative border-l border-gray-100/50 bg-gray-50/30 flex flex-col justify-around items-center py-8">
-                     {/* Feedback Loop Placeholders */}
-                </div>
+            {/* Static Nodes: Agents */}
+            <div className="absolute left-[10%] top-[25%] -translate-y-1/2 flex flex-col items-center z-10 w-24">
+                <div className="w-16 h-16 rounded-2xl bg-white border-2 border-indigo-100 shadow-lg flex items-center justify-center text-indigo-600 font-bold text-xl">A</div>
+            </div>
+            <div className="absolute left-[10%] top-[75%] -translate-y-1/2 flex flex-col items-center z-10 w-24">
+                <div className="w-16 h-16 rounded-2xl bg-white border-2 border-cyan-100 shadow-lg flex items-center justify-center text-cyan-600 font-bold text-xl">B</div>
             </div>
 
-            {/* --- 动画层 (Overlay) --- */}
-            <div className="absolute inset-0 pointer-events-none">
-                {/* Ht Orbs: Agent -> System */}
-                {(step === 1 || step === 2) && (
-                    <>
-                        <motion.div
-                            className="absolute w-8 h-8 rounded-full bg-indigo-500 shadow-lg z-20"
-                            initial={{ left: "16%", top: "25%" }}
-                            animate={{ left: "50%", top: "50%", scale: 0.5, opacity: 0 }}
-                            transition={{ duration: 0.8 }}
-                        />
-                         <motion.div
-                            className="absolute w-8 h-8 rounded-full bg-cyan-500 shadow-lg z-20"
-                            initial={{ left: "16%", top: "75%" }}
-                            animate={{ left: "50%", top: "50%", scale: 0.5, opacity: 0 }}
-                            transition={{ duration: 0.8 }}
-                        />
-                    </>
-                )}
-
-                {/* Processing Particles: Center Chaos */}
-                {(step === 2 || step === 3) && (
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32">
-                        {[...Array(8)].map((_, i) => (
-                             <motion.div
-                                key={i}
-                                className={`absolute w-3 h-3 rounded-full ${i%2===0 ? 'bg-purple-500' : 'bg-rose-400'}`}
-                                initial={{ x: 0, y: 0, opacity: 1 }}
-                                animate={step === 2 ? {
-                                    x: Math.cos(i) * 40,
-                                    y: Math.sin(i) * 40,
-                                } : {
-                                    // Step 3: Route back
-                                    x: -150, // Move left back to agents
-                                    y: i%2===0 ? -100 : 100, // Split top/bottom
-                                    opacity: 0
-                                }}
-                                transition={{ duration: 0.8 }}
-                            />
-                        ))}
-                    </div>
-                )}
-
-                {/* Pt Chips: System -> Agent */}
-                {step === 4 && (
-                     <>
-                        <motion.div
-                            className="absolute w-12 h-8 bg-indigo-600 rounded flex items-center justify-center text-[10px] text-white font-bold z-20 shadow-lg"
-                            initial={{ left: "50%", top: "50%", opacity: 0 }}
-                            animate={{ left: "20%", top: "25%", opacity: 1 }}
-                            transition={{ duration: 0.8 }}
-                        >Pt</motion.div>
-                         <motion.div
-                            className="absolute w-12 h-8 bg-cyan-600 rounded flex items-center justify-center text-[10px] text-white font-bold z-20 shadow-lg"
-                            initial={{ left: "50%", top: "50%", opacity: 0 }}
-                            animate={{ left: "20%", top: "75%", opacity: 1 }}
-                            transition={{ duration: 0.8 }}
-                        >Pt</motion.div>
-                    </>
-                )}
-
-                {/* Final Generation */}
-                <AnimatePresence>
-                {step === 5 && (
+            {/* Static Node: System Center */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                <div className={`w-32 h-32 rounded-full border-2 ${step >= 2 ? 'border-purple-500 bg-purple-50' : 'border-gray-200 bg-white'} flex items-center justify-center transition-all duration-500`}>
+                     {step >= 2 ? <Cpu size={40} className="text-purple-600" /> : <Database size={40} className="text-gray-300" />}
+                </div>
+                {step >= 2 && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-30"
+                        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                        className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-bold text-purple-500"
                     >
-                         <div className="bg-white p-8 rounded-3xl shadow-2xl border border-green-100 flex flex-col items-center">
-                            <CheckCircle2 className="w-16 h-16 text-green-500 mb-4" />
-                            <h3 className="text-2xl font-bold text-gray-900">Consensus Reached</h3>
-                         </div>
+                        Latent Space
                     </motion.div>
                 )}
-                </AnimatePresence>
             </div>
 
+            {/* --- Dynamic Animation Layers --- */}
+
+            {/* Step 0: Drafts */}
+            <AnimatePresence>
+            {step === 0 && (
+                <>
+                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} className="absolute top-[25%] left-[25%] -translate-y-1/2 bg-white px-3 py-2 rounded-lg shadow-md border border-indigo-100 flex items-center gap-2 z-20">
+                        <FileText size={14} className="text-indigo-400"/> <span className="text-xs font-mono text-gray-500">Draft A</span>
+                    </motion.div>
+                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} className="absolute top-[75%] left-[25%] -translate-y-1/2 bg-white px-3 py-2 rounded-lg shadow-md border border-cyan-100 flex items-center gap-2 z-20">
+                        <FileText size={14} className="text-cyan-400"/> <span className="text-xs font-mono text-gray-500">Draft B</span>
+                    </motion.div>
+                </>
+            )}
+            </AnimatePresence>
+
+            {/* Step 1 & 2: Extraction (Orbs) */}
+            {(step === 1 || step === 2) && (
+                <>
+                        <motion.div
+                        className="absolute w-8 h-8 bg-indigo-500 rounded-full shadow-lg flex items-center justify-center text-white text-[10px] z-20"
+                        initial={{ left: "25%", top: "25%" }}
+                        animate={step === 1 ? { left: "35%" } : { left: "50%", top: "50%", scale: 0, opacity: 0 }}
+                        transition={{ duration: 0.8, ease: "easeInOut" }}
+                        >Ht</motion.div>
+                        <motion.div
+                        className="absolute w-8 h-8 bg-cyan-500 rounded-full shadow-lg flex items-center justify-center text-white text-[10px] z-20"
+                        initial={{ left: "25%", top: "75%" }}
+                        animate={step === 1 ? { left: "35%" } : { left: "50%", top: "50%", scale: 0, opacity: 0 }}
+                        transition={{ duration: 0.8, ease: "easeInOut" }}
+                        >Ht</motion.div>
+                </>
+            )}
+
+            {/* Step 3: Uncovering -> Step 4 Routing (Explicit Shapes) */}
+            {(step === 2 || step === 3) && (
+                <div className="absolute inset-0 pointer-events-none z-20">
+                    {/* SHARED Thought (Center) */}
+                     <motion.div
+                        className="absolute w-10 h-10 bg-purple-100 border-2 border-purple-500 rounded-full flex items-center justify-center shadow-lg"
+                        style={{ top: "50%", left: "50%", marginTop: "-20px", marginLeft: "-20px" }}
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring" }}
+                    >
+                        <Share2 size={16} className="text-purple-600" />
+                    </motion.div>
+
+                    {/* Private A (Moves Top) */}
+                    <motion.div
+                        className="absolute w-8 h-8 bg-indigo-100 border-2 border-indigo-500 rounded flex items-center justify-center shadow-md"
+                        style={{ marginTop: "-16px", marginLeft: "-16px" }}
+                        initial={{ top: "50%", left: "50%", opacity: 0 }}
+                        animate={step === 2 ? { top: "45%", left: "45%", opacity: 1 } : { top: "25%", left: "60%", opacity: 1 }}
+                        transition={{ duration: 0.8, ease: "easeInOut" }}
+                    >
+                        <Lock size={12} className="text-indigo-600" />
+                    </motion.div>
+
+                    {/* Private B (Moves Bottom) */}
+                    <motion.div
+                        className="absolute w-8 h-8 bg-cyan-100 border-2 border-cyan-500 rounded flex items-center justify-center shadow-md"
+                        style={{ marginTop: "-16px", marginLeft: "-16px" }}
+                        initial={{ top: "50%", left: "50%", opacity: 0 }}
+                        animate={step === 2 ? { top: "55%", left: "45%", opacity: 1 } : { top: "75%", left: "60%", opacity: 1 }}
+                        transition={{ duration: 0.8, ease: "easeInOut" }}
+                    >
+                        <Lock size={12} className="text-cyan-600" />
+                    </motion.div>
+                </div>
+            )}
+
+            {/* Step 4: Injection (Chips) */}
+            {step === 4 && (
+                <>
+                    <motion.div
+                        className="absolute w-10 h-8 bg-indigo-600 rounded flex items-center justify-center text-white text-[10px] font-bold shadow-lg z-30"
+                        initial={{ left: "60%", top: "25%", scale: 0 }}
+                        animate={{ left: "25%", top: "25%", scale: 1 }}
+                        transition={{ duration: 0.8, ease: "easeInOut" }}
+                    >Pt</motion.div>
+                    <motion.div
+                        className="absolute w-10 h-8 bg-cyan-600 rounded flex items-center justify-center text-white text-[10px] font-bold shadow-lg z-30"
+                        initial={{ left: "60%", top: "75%", scale: 0 }}
+                        animate={{ left: "25%", top: "75%", scale: 1 }}
+                        transition={{ duration: 0.8, ease: "easeInOut" }}
+                    >Pt</motion.div>
+                </>
+            )}
+
+            {/* Step 5: Generation (Dynamic Typing) */}
+            <AnimatePresence>
+            {step === 5 && (
+                <>
+                    {/* Doc A */}
+                    <motion.div
+                        initial={{ scale: 0, opacity: 0, x: -20 }}
+                        animate={{ scale: 1, opacity: 1, x: 0 }}
+                        className="absolute left-[30%] top-[25%] -translate-y-1/2 bg-white p-3 rounded-xl shadow-lg border border-green-200 flex flex-col gap-1 z-20 w-24"
+                    >
+                        <div className="w-full h-1 bg-green-100 rounded"></div>
+                        <div className="w-3/4 h-1 bg-green-100 rounded"></div>
+                         <div className="w-1/2 h-1 bg-green-100 rounded"></div>
+                         <motion.div
+                            initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.5 }}
+                            className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full p-0.5"
+                        >
+                            <CheckCircle2 size={10} />
+                        </motion.div>
+                    </motion.div>
+
+                    {/* Doc B */}
+                     <motion.div
+                        initial={{ scale: 0, opacity: 0, x: -20 }}
+                        animate={{ scale: 1, opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="absolute left-[30%] top-[75%] -translate-y-1/2 bg-white p-3 rounded-xl shadow-lg border border-green-200 flex flex-col gap-1 z-20 w-24"
+                    >
+                         <div className="w-full h-1 bg-green-100 rounded"></div>
+                        <div className="w-3/4 h-1 bg-green-100 rounded"></div>
+                         <div className="w-1/2 h-1 bg-green-100 rounded"></div>
+                         <motion.div
+                            initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.6 }}
+                            className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full p-0.5"
+                        >
+                            <CheckCircle2 size={10} />
+                        </motion.div>
+                    </motion.div>
+
+                    {/* Consensus Badge */}
+                    <motion.div
+                        initial={{ scale: 0.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.8 }}
+                        className="absolute right-[10%] top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-xl px-6 py-4 rounded-2xl border border-green-100 text-center shadow-2xl shadow-green-100"
+                    >
+                        <div className="flex items-center justify-center gap-2 mb-1 text-green-600 font-bold text-lg">
+                            <Sparkles size={20} /> High Quality
+                        </div>
+                        <div className="text-xs text-gray-400">Consensus Reached</div>
+                    </motion.div>
+                </>
+            )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
@@ -827,7 +857,7 @@ const ResultsSection = () => {
                     <Cpu className="text-cyan-600 w-8 h-8" />
                   </div>
                   <div className="text-4xl font-black text-gray-900 mb-2 tracking-tight">轻量化训练</div>
-                  <div className="text-sm font-bold text-gray-500 uppercase tracking-wider">仅需训练自编码器与适配器</div>
+                  <div className="text-sm font-bold text-gray-500 uppercase tracking-wider">训练自编码器与适配器</div>
               </motion.div>
 
               <div className="col-span-2 bg-gradient-to-br from-gray-900 to-gray-800 p-10 rounded-3xl text-white shadow-2xl relative overflow-hidden">
@@ -841,6 +871,7 @@ const ResultsSection = () => {
                     通过非参数下的潜在思维解耦，我们在不损失信息的前提下实现了高效的多智能体协作。
                     </p>
                 </div>
+                {/* 装饰圆环 */}
                 <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
               </div>
            </div>
